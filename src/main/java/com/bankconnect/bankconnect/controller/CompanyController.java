@@ -1,5 +1,6 @@
 package com.bankconnect.bankconnect.controller;
 
+import com.bankconnect.bankconnect.dto.CompanyDto;
 import com.bankconnect.bankconnect.model.Company;
 import com.bankconnect.bankconnect.service.CompanyServices;
 import org.springframework.http.HttpStatus;
@@ -19,7 +20,7 @@ public class CompanyController {
     }
 
     @PostMapping
-    public ResponseEntity<Company> createCompany(@RequestBody final Company companyData) {
+    public ResponseEntity<Company> createCompany(@RequestBody final CompanyDto companyData) {
         Company companyRes = companyService.createCompany(companyData);
 
         return new ResponseEntity<Company>(companyRes, HttpStatus.CREATED);

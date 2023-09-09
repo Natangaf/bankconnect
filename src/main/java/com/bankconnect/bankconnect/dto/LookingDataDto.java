@@ -3,7 +3,7 @@ package com.bankconnect.bankconnect.dto;
 import com.bankconnect.bankconnect.model.Client;
 import com.bankconnect.bankconnect.model.Company;
 
-public class LookingData {
+public class LookingDataDto {
 
     private Client client;
     private Company companyClient;

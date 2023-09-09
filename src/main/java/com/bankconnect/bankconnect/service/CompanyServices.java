@@ -1,5 +1,6 @@
 package com.bankconnect.bankconnect.service;
 
+import com.bankconnect.bankconnect.dto.CompanyDto;
 import com.bankconnect.bankconnect.model.Company;
 import com.bankconnect.bankconnect.repository.CompanyRepository;
 import org.springframework.stereotype.Service;
@@ -14,7 +15,7 @@ public class CompanyServices {
         this.companyRepository = companyRepository;
     }
 
-    public Company createCompany(final Company companyData){
+    public Company createCompany(final CompanyDto companyData){
 
         final Company company = new Company(
                 companyData.getCnpj(),

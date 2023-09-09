@@ -1,5 +1,6 @@
 package com.bankconnect.bankconnect.service;
 
+import com.bankconnect.bankconnect.dto.ClientDto;
 import com.bankconnect.bankconnect.model.Client;
 import com.bankconnect.bankconnect.model.Company;
 import com.bankconnect.bankconnect.repository.ClientRepository;
@@ -19,8 +20,8 @@ public class ClientServices {
         this.companyRepository = companyRepository;
     }
 
-    public Client createClient(final Client clientData) {
-        String companyName = clientData.getCompanyUser().getName();
+    public Client createClient(final ClientDto clientData) {
+        String companyName = clientData.getCompanyUser();
         Company companyUser = companyRepository.findByName(companyName);
 
         final Client client = new Client(
@@ -42,7 +43,7 @@ public class ClientServices {
         return clientRepository.findById(id).orElseThrow(()->new Exception(" Cliente não Existe"));
     }
 
-    public Client updateClient (final Client client,final long id) throws Exception{
+    public Client updateClient (final ClientDto client,final long id) throws Exception{
 
         final Client oldClient = clientRepository.findById(id).orElseThrow(()->new Exception(" Cliente não Existe"));
         oldClient.setName(client.getName());

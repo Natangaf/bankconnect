@@ -1,5 +1,6 @@
 package com.bankconnect.bankconnect.controller;
 
+import com.bankconnect.bankconnect.dto.ClientDto;
 import com.bankconnect.bankconnect.model.Client;
 import com.bankconnect.bankconnect.service.ClientServices;
 import org.springframework.http.HttpStatus;
@@ -18,7 +19,7 @@ public class ClientController {
     }
 
     @PostMapping
-    public ResponseEntity<Client> createClient(@RequestBody final Client clientData) {
+    public ResponseEntity<Client> createClient(@RequestBody final ClientDto clientData) {
         Client createdClient = clientServices.createClient(clientData);
 
         return new ResponseEntity<Client>(createdClient, HttpStatus.CREATED);
@@ -42,7 +43,7 @@ public class ClientController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Client> updateClients(@PathVariable String id,@RequestBody final Client clientData) throws Exception {
+    public ResponseEntity<Client> updateClients(@PathVariable String id,@RequestBody final ClientDto clientData) throws Exception {
 
         final Client client = clientServices.updateClient(clientData,Long.parseLong(id));
 
