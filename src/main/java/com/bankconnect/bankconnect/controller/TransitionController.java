@@ -26,4 +26,12 @@ public class TransitionController {
         return new ResponseEntity<Transition>(transition, HttpStatus.CREATED);
 
     }
+    @PostMapping("/{id}/withdraw")
+    public ResponseEntity<Transition> withdrawClients(@RequestBody TransitionDto depositData, @PathVariable String id) throws Exception {
+
+        final Transition transition =  transitionServices.clientWithdraw(depositData,Long.parseLong(id));
+
+        return new ResponseEntity<Transition>(transition, HttpStatus.CREATED);
+
+    }
 }

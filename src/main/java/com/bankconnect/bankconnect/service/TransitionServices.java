@@ -28,22 +28,19 @@ public class TransitionServices {
         Client client = clientRepository.findById(id).orElseThrow(() -> new Exception("Cliente não Existe"));
         Company companyClient = client.getCompanyUser();
 
-        float balance;
-        float rate;
+        float balanceClient;
 
         if (type == TypeTransition.DEPOSITO) {
-            rate = transactionDto.getValue() - companyClient.getDepositFee();
-            balance = client.getAccountValue() + rate;
+            balanceClient = client.getAccountValue() +(transactionDto.getValue() - companyClient.getDepositFee());
             companyClient.setBalance(companyClient.getBalance() + transactionDto.getValue());
         } else if (type == TypeTransition.SAQUE) {
-            balance = client.getAccountValue() - transactionDto.getValue();
-            rate = balance - companyClient.getWithdrawalFee();
-            companyClient.setBalance(balance);
+            balanceClient = client.getAccountValue() - transactionDto.getValue() - companyClient.getWithdrawalFee();
+            companyClient.setBalance( companyClient.getBalance() + transactionDto.getValue());
         } else {
             throw new IllegalArgumentException("Tipo de transação inválido");
         }
 
-        client.setAccountValue(balance);
+        client.setAccountValue(balanceClient);
 
         companyRepository.save(companyClient);
         clientRepository.save(client);

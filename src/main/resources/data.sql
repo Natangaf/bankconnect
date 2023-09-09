@@ -1,5 +1,5 @@
 INSERT INTO "company" ("cnpj", "name", "address", "telephone", "deposit_fee","withdrawal_fee", "balance")
-VALUES ('12345678901234', 'Empresa A', 'Rua Principal, 123', '9876543210', 0.05,0.5, 10000.00);
+VALUES ('12345678901234', 'Empresa A', 'Rua Principal, 123', '9876543210', 1,10, 10000.00);
 
 INSERT INTO "client" ("cpf", "name", "address", "telephone","account_value", "company_user_id")
 VALUES
