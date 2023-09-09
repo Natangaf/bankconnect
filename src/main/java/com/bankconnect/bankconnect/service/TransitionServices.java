@@ -1,6 +1,6 @@
 package com.bankconnect.bankconnect.service;
 
-import com.bankconnect.bankconnect.dto.CreateDepositDto;
+import com.bankconnect.bankconnect.dto.TransitionDto;
 import com.bankconnect.bankconnect.model.Client;
 import com.bankconnect.bankconnect.model.Company;
 import com.bankconnect.bankconnect.model.Transition;
@@ -8,9 +8,11 @@ import com.bankconnect.bankconnect.model.TypeTransition;
 import com.bankconnect.bankconnect.repository.ClientRepository;
 import com.bankconnect.bankconnect.repository.CompanyRepository;
 import com.bankconnect.bankconnect.repository.TransitionRepository;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalTime;
 
+@Service
 public class TransitionServices {
     private final TransitionRepository transitionRepository;
     private final ClientRepository clientRepository;
@@ -22,35 +24,46 @@ public class TransitionServices {
         this.companyRepository = companyRepository;
     }
 
-    public Transition clientDeposit(final CreateDepositDto deposit , final long id) throws Exception{
+    private Transition performTransaction(TypeTransition type, TransitionDto transactionDto, long id) throws Exception {
+        Client client = clientRepository.findById(id).orElseThrow(() -> new Exception("Cliente não Existe"));
+        Company companyClient = client.getCompanyUser();
 
-        final Client client = clientRepository.findById(id).orElseThrow(()->new Exception(" Cliente não Existe"));
+        float balance;
+        float rate;
 
-        final long companyIdClient = client.getCompanyUser().getId();
-
-        final Company companyClient = companyRepository.findById(companyIdClient).orElseThrow(() -> new Exception(" Cliente não Existe"));
-
-        final float rate = deposit.getValue() - companyClient.getDepositFee();
-
-        final float balance = (client.getAccountValue() + rate);
-
-        companyClient.setBalance(companyClient.getBalance() + rate );
+        if (type == TypeTransition.DEPOSITO) {
+            rate = transactionDto.getValue() - companyClient.getDepositFee();
+            balance = client.getAccountValue() + rate;
+            companyClient.setBalance(companyClient.getBalance() + transactionDto.getValue());
+        } else if (type == TypeTransition.SAQUE) {
+            balance = client.getAccountValue() - transactionDto.getValue();
+            rate = balance - companyClient.getWithdrawalFee();
+            companyClient.setBalance(balance);
+        } else {
+            throw new IllegalArgumentException("Tipo de transação inválido");
+        }
 
         client.setAccountValue(balance);
 
         companyRepository.save(companyClient);
-
         clientRepository.save(client);
 
-        final Transition transitionClient = new Transition(
-                TypeTransition.DEPOSITO,
-                deposit.getValue(),
+        Transition transitionClient = new Transition(
+                type,
+                transactionDto.getValue(),
                 LocalTime.now(),
                 companyClient,
                 client
         );
 
-        return  transitionRepository.save(transitionClient);
+        return transitionRepository.save(transitionClient);
     }
 
+    public Transition clientDeposit(TransitionDto deposit, long id) throws Exception {
+        return performTransaction(TypeTransition.DEPOSITO, deposit, id);
+    }
+
+    public Transition clientWithdraw(TransitionDto withdraw, long id) throws Exception {
+        return performTransaction(TypeTransition.SAQUE, withdraw, id);
+    }
 }

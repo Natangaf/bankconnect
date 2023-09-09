@@ -1,6 +1,6 @@
 package com.bankconnect.bankconnect.dto;
 
-public class CreateDepositDto {
+public class TransitionDto {
 
     private float value;
 
